@@ -1,10 +1,11 @@
 from fastapi import APIRouter
+from app.schemas import CascadeAlertResponse
 from app.services import graph_engine
 
 router = APIRouter(prefix="/api/cascade", tags=["Prescription Cascade"])
 
 
-@router.post("/analyze", response_model=dict)
+@router.post("/analyze", response_model=CascadeAlertResponse)
 async def analyze_patient_cascade(data: dict):
     """Analyze a patient record and return cascade detection results.
 
@@ -13,4 +14,4 @@ async def analyze_patient_cascade(data: dict):
     module import time.
     """
     result = graph_engine.detect_cascade_dict(data)
-    return result.dict() if hasattr(result, "dict") else result
+    return result

@@ -1,65 +1,134 @@
+from __future__ import annotations
+
 from app.services import nlp_parser
-from typing import List
-from typing import Any, Dict
+from datetime import datetime
+from typing import Any, Dict, List, Optional
+
+SIDE_EFFECT_MAP = {
+    "amlodipine": ["swelling", "edema", "ankle swelling"],
+    "furosemide": ["gout", "joint pain", "dehydration"],
+    "lisinopril": ["cough", "dizziness"],
+}
 
 
-def _detect_from_record(record: Any) -> Any:
-    # internal helper expects a typed pydantic model with attributes
-    drug_names = [p.drug_name.lower() for p in record.prescriptions]
+class TimelineEvent:
+    def __init__(self, date: Optional[datetime], label: str, kind: str, source: str):
+        self.date = date
+        self.label = label
+        self.kind = kind
+        self.source = source
 
-    # merge explicit symptoms with ones parsed from the clinical note
-    parsed = nlp_parser.extract_symptoms_from_note(record.clinical_note or "")
-    symptom_names = [s.symptom_name.lower() for s in record.symptoms] if record.symptoms else []
-    symptom_names += [s["symptom_name"] for s in parsed]
+    def __repr__(self) -> str:
+        return f"TimelineEvent(date={self.date}, kind={self.kind}, label={self.label})"
 
-    suspected_chain: List[str] = []
-    if "amlodipine" in drug_names and any("swelling" in s for s in symptom_names):
-        if "furosemide" in drug_names:
-            suspected_chain = [
-                "Amlodipine (Hypertension) -> Prescribed",
-                "Ankle Swelling (Side Effect) -> Documented",
-                "Furosemide (Diuretic) -> Prescribed"
-            ]
 
-    from app.schemas import CascadeAlertResponse
+def parse_date(value: Optional[str]) -> Optional[datetime]:
+    if not value:
+        return None
+    for fmt in ("%Y-%m-%d", "%Y-%m-%dT%H:%M:%S", "%Y-%m-%d %H:%M:%S"):
+        try:
+            return datetime.strptime(value, fmt)
+        except ValueError:
+            continue
+    try:
+        return datetime.fromisoformat(value)
+    except Exception:
+        return None
 
-    if suspected_chain:
-        return CascadeAlertResponse(
-            patient_id=record.patient_id,
-            has_cascade=True,
-            suspected_chain=suspected_chain,
-            recommendation=(
-                "Suspected prescription cascade: consider deprescribing Furosemide and"
-                " re-evaluating Amlodipine. Discuss with prescribing clinician."
-            ),
-        )
 
-    return CascadeAlertResponse(
-        patient_id=record.patient_id,
-        has_cascade=False,
-        suspected_chain=[],
-        recommendation="No prescription cascade detected."
-    )
+def build_timeline(record: Any) -> List[TimelineEvent]:
+    timeline: List[TimelineEvent] = []
+    for pres in record.prescriptions:
+        timeline.append(TimelineEvent(
+            date=parse_date(pres.start_date),
+            label=pres.drug_name,
+            kind="prescription",
+            source=pres.drug_name,
+        ))
+
+    for sym in record.symptoms:
+        timeline.append(TimelineEvent(
+            date=parse_date(sym.onset_date),
+            label=sym.symptom_name,
+            kind="symptom",
+            source=sym.symptom_name,
+        ))
+
+    if record.clinical_note:
+        note_symptoms = nlp_parser.extract_symptoms_from_note(record.clinical_note)
+        for item in note_symptoms:
+            timeline.append(TimelineEvent(
+                date=parse_date(item.get("onset_date")),
+                label=item.get("symptom_name", "unknown symptom"),
+                kind="symptom",
+                source="clinical_note",
+            ))
+
+    return sorted(timeline, key=lambda event: event.date or datetime.min)
+
+
+def match_side_effects(drug: str, symptom: str) -> bool:
+    drug_key = drug.lower()
+    symptom_text = symptom.lower()
+    return any(effect in symptom_text for effect in SIDE_EFFECT_MAP.get(drug_key, []))
 
 
 def detect_cascade(record: Any) -> Any:
-    """Public API: accept a typed `PatientRecordRequest` or dict-ish object.
-
-    If a dict is provided, call `detect_cascade_dict` instead.
-    """
-    # if it's a mapping/dict-like, delegate to dict-based constructor
     if isinstance(record, dict):
         return detect_cascade_dict(record)
-
     return _detect_from_record(record)
 
 
-def detect_cascade_dict(data: Dict[str, Any]) -> Any:
-    """Construct pydantic model from dict and run the detector.
+def _detect_from_record(record: Any) -> Any:
+    timeline = build_timeline(record)
+    suspected_chain: List[str] = []
+    detection_found = False
+    if not timeline:
+        return _response(record.patient_id, False, [])
 
-    Importing the pydantic model is done here to avoid module import cycles
-    during application startup in small demos.
-    """
+    for i, event in enumerate(timeline):
+        if event.kind != "prescription":
+            continue
+        drug = event.label
+        for later_event in timeline[i+1:]:
+            if later_event.kind == "symptom" and match_side_effects(drug, later_event.label):
+                for follow_event in timeline[timeline.index(later_event)+1:]:
+                    if follow_event.kind == "prescription" and follow_event.label.lower() != drug.lower():
+                        suspected_chain = [
+                            f"{drug} -> Prescribed",
+                            f"{later_event.label} -> Documented",
+                            f"{follow_event.label} -> Prescribed",
+                        ]
+                        detection_found = True
+                        break
+                if detection_found:
+                    break
+        if detection_found:
+            break
+
+    if detection_found:
+        return _response(record.patient_id, True, suspected_chain)
+    return _response(record.patient_id, False, [])
+
+
+def _response(patient_id: str, has_cascade: bool, chain: List[str]) -> Any:
+    from app.schemas import CascadeAlertResponse
+
+    recommendation = (
+        "Suspected prescription cascade detected. Re-evaluate the earlier medication and"
+        " consider deprescribing the later medication if appropriate."
+    )
+    if not has_cascade:
+        recommendation = "No prescription cascade detected."
+    return CascadeAlertResponse(
+        patient_id=patient_id,
+        has_cascade=has_cascade,
+        suspected_chain=chain,
+        recommendation=recommendation,
+    )
+
+
+def detect_cascade_dict(data: Dict[str, Any]) -> Any:
     from app.schemas import PatientRecordRequest
 
     rec = PatientRecordRequest(**data)

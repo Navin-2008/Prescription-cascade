@@ -11,8 +11,7 @@ router = APIRouter(prefix="/api/ingest", tags=["Ingest"])
 @router.post("/record")
 async def ingest_record(record: PatientRecordRequest):
     """Ingest a patient record and persist it for later analysis."""
-    # persist raw dict form
-    payload = record.dict()
+    payload = record.model_dump()
     storage.save_record(payload)
     try:
         db.save_record(payload)
