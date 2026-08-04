@@ -1,0 +1,19 @@
+# Python cache
+__pycache__/
+*.py[cod]
+
+# Python virtual environments
+venv/
+.env
+
+# Test artifacts
+.pytest_cache/
+
+# SQLite database
+app/data/*.db
+
+# Local runtime data
+app/data/
+
+# Local helper scripts
+scripts/
