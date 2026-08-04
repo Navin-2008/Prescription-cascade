@@ -1,0 +1,250 @@
+.counter {
+  font-size: 16px;
+  padding: 5px 10px;
+  border-radius: 5px;
+  color: var(--accent);
+  background: var(--accent-bg);
+  border: 2px solid transparent;
+  transition: border-color 0.3s;
+  margin-bottom: 24px;
+
+  &:hover {
+    border-color: var(--accent-border);
+  }
+  &:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 2px;
+  }
+}
+
+.app-shell {
+  padding: 32px;
+  max-width: 1220px;
+  margin: 0 auto;
+}
+
+.page-header {
+  display: flex;
+  justify-content: space-between;
+  gap: 24px;
+  align-items: flex-start;
+  margin-bottom: 32px;
+}
+
+.page-header h1 {
+  margin: 0 0 8px;
+}
+
+.health-card {
+  min-width: 260px;
+  border: 1px solid var(--border);
+  border-radius: 18px;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  background: var(--code-bg);
+}
+
+.status-text {
+  margin-top: 8px;
+  color: var(--text);
+  font-size: 14px;
+}
+
+.badge {
+  display: inline-flex;
+  padding: 6px 12px;
+  border-radius: 999px;
+  font-size: 13px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.badge.online {
+  background: rgba(56, 189, 248, 0.15);
+  color: #0ea5e9;
+}
+
+.badge.offline {
+  background: rgba(248, 113, 113, 0.14);
+  color: #ef4444;
+}
+
+.panel-grid {
+  display: grid;
+  grid-template-columns: 1.4fr 1fr;
+  gap: 24px;
+}
+
+.panel {
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  background: var(--bg);
+  padding: 28px;
+  box-shadow: var(--shadow);
+}
+
+.panel h2,
+.panel h3 {
+  margin-top: 0;
+}
+
+.form-group,
+.array-row {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-bottom: 18px;
+}
+
+.form-group label {
+  font-weight: 600;
+  color: var(--text-h);
+}
+
+input,
+textarea {
+  width: 100%;
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 12px 14px;
+  font: inherit;
+  background: transparent;
+  color: var(--text-h);
+}
+
+textarea {
+  resize: vertical;
+}
+
+.row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 24px;
+}
+
+.column {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.array-row {
+  gap: 12px;
+}
+
+.array-row input {
+  width: 100%;
+}
+
+.array-row {
+  display: grid;
+  grid-template-columns: 1fr 168px 96px;
+  gap: 10px;
+  align-items: center;
+}
+
+.text-button,
+.action-button {
+  border: 1px solid transparent;
+  border-radius: 14px;
+  padding: 10px 16px;
+  font: inherit;
+  cursor: pointer;
+  background: var(--accent-bg);
+  color: var(--accent);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.text-button {
+  background: transparent;
+  color: var(--text-h);
+  border: 1px solid var(--border);
+}
+
+.action-button:hover,
+.text-button:hover {
+  transform: translateY(-1px);
+}
+
+.action-button.primary {
+  background: var(--accent);
+  color: white;
+}
+
+.action-button.secondary {
+  background: transparent;
+  color: var(--text-h);
+  border: 1px solid var(--border);
+}
+
+.button-group {
+  display: flex;
+  gap: 14px;
+  flex-wrap: wrap;
+  margin-bottom: 18px;
+}
+
+.info-box {
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 18px;
+  background: var(--code-bg);
+  margin-bottom: 18px;
+  color: var(--text);
+}
+
+.message {
+  border-radius: 16px;
+  padding: 18px;
+  margin-top: 14px;
+  text-align: left;
+}
+
+.message.info {
+  background: rgba(59, 130, 246, 0.08);
+  border: 1px solid rgba(59, 130, 246, 0.2);
+}
+
+.message.success {
+  background: rgba(34, 197, 94, 0.1);
+  border: 1px solid rgba(34, 197, 94, 0.23);
+}
+
+.message.error {
+  background: rgba(239, 68, 68, 0.1);
+  border: 1px solid rgba(239, 68, 68, 0.24);
+  color: #991b1b;
+}
+
+pre {
+  background: rgba(243, 244, 246, 0.9);
+  border-radius: 14px;
+  padding: 14px;
+  overflow-x: auto;
+  margin: 0;
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
+@media (max-width: 960px) {
+  .page-header,
+  .panel-grid {
+    display: block;
+  }
+
+  .panel {
+    margin-bottom: 24px;
+  }
+
+  .row,
+  .array-row {
+    grid-template-columns: 1fr;
+  }
+
+  .health-card {
+    width: 100%;
+  }
+}
