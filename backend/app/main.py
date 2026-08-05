@@ -1,9 +1,18 @@
 from fastapi import FastAPI
-from app.routers import cascade, ingest
+from fastapi.responses import RedirectResponse
+from app.routers import cascade, ingest, parse, knowledge, patients
 
 app = FastAPI(title="Prescription Cascade Detector")
 app.include_router(ingest.router)
+app.include_router(parse.router)
 app.include_router(cascade.router)
+app.include_router(knowledge.router)
+app.include_router(patients.router)
+
+
+@app.get("/", include_in_schema=False)
+async def root():
+    return RedirectResponse(url="/docs")
 
 
 @app.get("/healthz")

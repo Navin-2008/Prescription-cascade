@@ -1,0 +1,174 @@
+{
+  "warfarin": {
+    "display_name": "Warfarin",
+    "aliases": [
+      "coumadin"
+    ],
+    "drug_class": "Anticoagulant",
+    "used_for": "Blood clot prevention",
+    "clinical_summary": "Narrow therapeutic index anticoagulant requiring regular INR monitoring; bleeding risk rises sharply with drug interactions common in elderly polypharmacy.",
+    "side_effects": [
+      {
+        "symptom_name": "bruising",
+        "typical_onset_days_min": 3,
+        "typical_onset_days_max": 14,
+        "source": "FAERS",
+        "frequency": "common"
+      },
+      {
+        "symptom_name": "bleeding gums",
+        "typical_onset_days_min": 3,
+        "typical_onset_days_max": 30,
+        "source": "FAERS",
+        "frequency": "common"
+      },
+      {
+        "symptom_name": "nosebleeds",
+        "typical_onset_days_min": 3,
+        "typical_onset_days_max": 30,
+        "source": "FAERS",
+        "frequency": "uncommon"
+      }
+    ]
+  },
+  "metoprolol": {
+    "display_name": "Metoprolol",
+    "aliases": [
+      "lopressor",
+      "toprol"
+    ],
+    "drug_class": "Beta blocker",
+    "used_for": "Hypertension and heart rate control",
+    "clinical_summary": "Cardioselective beta blocker; fatigue and low mood are frequently misattributed to depression or aging rather than the medication itself.",
+    "side_effects": [
+      {
+        "symptom_name": "fatigue",
+        "typical_onset_days_min": 7,
+        "typical_onset_days_max": 30,
+        "source": "FAERS",
+        "frequency": "common"
+      },
+      {
+        "symptom_name": "low mood",
+        "typical_onset_days_min": 14,
+        "typical_onset_days_max": 60,
+        "source": "PubMed",
+        "frequency": "uncommon"
+      },
+      {
+        "symptom_name": "dizziness",
+        "typical_onset_days_min": 1,
+        "typical_onset_days_max": 14,
+        "source": "FAERS",
+        "frequency": "common"
+      }
+    ]
+  },
+  "omeprazole": {
+    "display_name": "Omeprazole",
+    "aliases": [
+      "prilosec"
+    ],
+    "drug_class": "Proton pump inhibitor",
+    "used_for": "Acid reflux and ulcers",
+    "clinical_summary": "Long-term PPI use is associated with reduced magnesium and B12 absorption, sometimes misdiagnosed as unrelated deficiency conditions in elderly patients.",
+    "side_effects": [
+      {
+        "symptom_name": "headache",
+        "typical_onset_days_min": 1,
+        "typical_onset_days_max": 14,
+        "source": "FAERS",
+        "frequency": "common"
+      },
+      {
+        "symptom_name": "low magnesium",
+        "typical_onset_days_min": 180,
+        "typical_onset_days_max": 730,
+        "source": "PubMed",
+        "frequency": "rare"
+      }
+    ]
+  },
+  "prednisone": {
+    "display_name": "Prednisone",
+    "aliases": [
+      "deltasone"
+    ],
+    "drug_class": "Corticosteroid",
+    "used_for": "Inflammation and autoimmune conditions",
+    "clinical_summary": "Systemic corticosteroid with well-known metabolic effects; new-onset high blood sugar in a non-diabetic elderly patient is a classic cascade trigger for an unnecessary diabetes workup.",
+    "side_effects": [
+      {
+        "symptom_name": "elevated blood sugar",
+        "typical_onset_days_min": 3,
+        "typical_onset_days_max": 21,
+        "source": "FAERS",
+        "frequency": "common"
+      },
+      {
+        "symptom_name": "insomnia",
+        "typical_onset_days_min": 1,
+        "typical_onset_days_max": 14,
+        "source": "FAERS",
+        "frequency": "common"
+      },
+      {
+        "symptom_name": "mood changes",
+        "typical_onset_days_min": 3,
+        "typical_onset_days_max": 30,
+        "source": "PubMed",
+        "frequency": "uncommon"
+      }
+    ]
+  },
+  "sertraline": {
+    "display_name": "Sertraline",
+    "aliases": [
+      "zoloft"
+    ],
+    "drug_class": "SSRI",
+    "used_for": "Depression and anxiety",
+    "clinical_summary": "Commonly prescribed SSRI; GI upset at initiation is often mistaken for an unrelated stomach issue rather than a medication adjustment period.",
+    "side_effects": [
+      {
+        "symptom_name": "nausea",
+        "typical_onset_days_min": 1,
+        "typical_onset_days_max": 14,
+        "source": "FAERS",
+        "frequency": "common"
+      },
+      {
+        "symptom_name": "insomnia",
+        "typical_onset_days_min": 1,
+        "typical_onset_days_max": 21,
+        "source": "FAERS",
+        "frequency": "common"
+      }
+    ]
+  },
+  "levothyroxine": {
+    "display_name": "Levothyroxine",
+    "aliases": [
+      "synthroid"
+    ],
+    "drug_class": "Thyroid hormone",
+    "used_for": "Hypothyroidism",
+    "clinical_summary": "Synthetic thyroid hormone; over-replacement can cause symptoms resembling anxiety or hyperthyroidism, sometimes prompting unnecessary anxiolytic prescriptions in elderly patients.",
+    "side_effects": [
+      {
+        "symptom_name": "palpitations",
+        "typical_onset_days_min": 7,
+        "typical_onset_days_max": 60,
+        "source": "FAERS",
+        "frequency": "uncommon"
+      },
+      {
+        "symptom_name": "anxiety",
+        "typical_onset_days_min": 14,
+        "typical_onset_days_max": 90,
+        "source": "PubMed",
+        "frequency": "uncommon"
+      }
+    ]
+  }
+}
